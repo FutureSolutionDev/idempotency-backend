@@ -27,9 +27,7 @@ npm install idempotency-middleware
 يجب أيضًا تثبيت الحزم المخصصة للنظام:
 
 ```bash
-npm install express
-# أو
-npm install fastify
+npm install express // fastify او Nest Js
 ```
 
 ---
