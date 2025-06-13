@@ -149,7 +149,7 @@ Open an issue or reach out for help on the GitHub repository.
 
 This library allows you to:
 
-* Use the same logic across Express, Fastify, and native HTTP
+* Use the same logic across Express, Fastify, NestJs and native HTTP
 * Handle repeated requests idempotently
 * Cache and replay responses using a consistent interface
 
