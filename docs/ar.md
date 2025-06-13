@@ -1,6 +1,20 @@
 # دليل استخدام موسوعة الاطرداد (Idempotency Middleware)
 
-يشرح هذا الدليل كيفية استخدام مكتبة Idempotency Middleware في بيئات Node.js المختلفة (مثل Express و Fastify والسيرفر النوعي).
+يشرح هذا الدليل كيفية استخدام مكتبة Idempotency Middleware في بيئات Node.js المختلفة (مثل Express و Fastify NestJs , Nodejs Native ).
+
+---
+
+## االشرح اللغات المدعومة
+
+* [عربي](https://github.com/FutureSolutionDev/idempotency-backend/tree/main/docs/ar.md)
+* [English](https://github.com/FutureSolutionDev/idempotency-backend/tree/main/docs/en.md)
+
+---
+
+## التكامل مع الواجهة الامامية ؟
+
+هذه المكتبة متوافقة مع مخزن Idempotency الواجهة الامامية
+[اقرأ دليل الواجهة الامامية](https://github.com/FutureSolutionDev/idempotency-client)
 
 ---
 
@@ -34,7 +48,7 @@ npm install fastify
 
 ```ts
 import express from 'express';
-import IdempotencyExpress from 'idempotency-middleware/dist/IdempotencyExpress';
+import IdempotencyExpress from 'idempotency';
 
 const app = express();
 app.use(IdempotencyExpress);
@@ -42,17 +56,17 @@ app.use(IdempotencyExpress);
 app.post('/submit', async (req, res) => {
   const session = (req as any).idempotencySession;
   const result = { success: true };
-  session.setResponseData(result);
-  await session.saveResponse();
+  await session.SaveResponse(result);
   res.status(200).json(result);
 });
+
 ```
 
 ### 2. Fastify
 
 ```ts
 import Fastify from 'fastify';
-import { IdempotencyFastify } from 'idempotency-middleware';
+import { IdempotencyFastify } from 'idempotency';
 
 const app = Fastify();
 app.addHook('onRequest', IdempotencyFastify);
@@ -60,8 +74,7 @@ app.addHook('onRequest', IdempotencyFastify);
 app.post('/submit', async (request, reply) => {
   const session = (request as any).idempotencySession;
   const result = { success: true };
-  session.setResponseData(result);
-  await session.saveResponse();
+  await session.SaveResponse(result);
   reply.send(result);
 });
 ```
@@ -70,20 +83,39 @@ app.post('/submit', async (request, reply) => {
 
 ```ts
 import http from 'http';
-import { nodeIdempotencyMiddleware } from 'idempotency-middleware';
+import { IdempotencyNode } from 'idempotency';
 
 const server = http.createServer((req, res) => {
-  nodeIdempotencyMiddleware(req, res, async () => {
+  IdempotencyNode(req, res, async () => {
     const session = (req as any).idempotencySession;
     const result = { success: true };
-    session.setResponseData(result);
-    await session.saveResponse();
+    await session.SaveResponse(result);
     res.writeHead(200, { 'Content-Type': 'application/json' });
     res.end(JSON.stringify(result));
   });
 });
 
 server.listen(3000);
+```
+
+### 4. Nest Js
+
+```ts
+// AppModule setup
+import { MiddlewareConsumer, Module, NestModule } from '@nestjs/common';
+import { IdempotencyNest } from 'idempotency';
+@Module
+({}) export class AppModule implements NestModule { configure(consumer: MiddlewareConsumer) { consumer.apply(IdempotencyNest).forRoutes('*'); } }
+
+
+// Controller usage
+@Get
+() async getData(@Req() req: Request,
+
+@Res
+() res: Response) { const session = (req as any).idempotencySession; const result = {ok: true, anotherData : false }; await session.SaveResponse(result); res.json(result); 
+}
+
 ```
 
 ---
@@ -102,7 +134,7 @@ expect(res.body.cached).toBe(true);
 
 ## التهيئة المتقدمة
 
-يمكنك تعديل `JsonIdempotencySession` لاستخدام Redis أو قاعدة بيانات.
+يمكنك تعديل `IdempotencySession` لاستخدام Redis أو قاعدة بيانات.
 
 ---
 

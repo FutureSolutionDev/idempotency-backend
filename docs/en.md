@@ -1,21 +1,34 @@
 # Idempotency Middleware Usage Guide
 
-This guide explains how to use the Idempotency Middleware library across different Node.js server environments (Express, Fastify, and native Node.js) to ensure safe and efficient HTTP request handling.
+This guide explains how to use the Idempotency Middleware library across different Node.js server environments (Express, Fastify, Nestjs and native Node.js) to ensure safe and efficient HTTP request handling.
+
+---
+
+## Languages Supported
+
+* [عربي](https://github.com/FutureSolutionDev/idempotency-backend/tree/main/docs/ar.md)
+* [English](https://github.com/FutureSolutionDev/idempotency-backend/tree/main/docs/en.md)
+
+---
+
+## Frontend Compatibility ?
+
+This library is compatible with the frontend Idempotency Store
+[Read the Frontend Guide](https://github.com/FutureSolutionDev/idempotency-client)
 
 ---
 
 ## 📦 Installation
 
 ```bash
-npm install idempotency-middleware
+npm install idempotency
+
 ```
 
 You must also install any framework-specific dependencies as needed:
 
 ```bash
-npm install express
-# or
-npm install fastify
+npm install express // fastify or Nest Js
 ```
 
 ---
@@ -34,7 +47,7 @@ The request is uniquely identified by the `idempotency-key` header or a fallback
 
 ```ts
 import express from 'express';
-import IdempotencyExpress from 'idempotency-middleware/dist/IdempotencyExpress';
+import IdempotencyExpress from 'idempotency';
 
 const app = express();
 app.use(IdempotencyExpress);
@@ -42,8 +55,7 @@ app.use(IdempotencyExpress);
 app.post('/submit', async (req, res) => {
   const session = (req as any).idempotencySession;
   const result = { success: true };
-  session.setResponseData(result);
-  await session.saveResponse();
+  await session.SaveResponse(result);
   res.status(200).json(result);
 });
 ```
@@ -52,7 +64,7 @@ app.post('/submit', async (req, res) => {
 
 ```ts
 import Fastify from 'fastify';
-import { IdempotencyFastify } from 'idempotency-middleware';
+import { IdempotencyFastify } from 'idempotency';
 
 const app = Fastify();
 app.addHook('onRequest', IdempotencyFastify);
@@ -60,8 +72,7 @@ app.addHook('onRequest', IdempotencyFastify);
 app.post('/submit', async (request, reply) => {
   const session = (request as any).idempotencySession;
   const result = { success: true };
-  session.setResponseData(result);
-  await session.saveResponse();
+  await session.SaveResponse(result);
   reply.send(result);
 });
 ```
@@ -70,20 +81,39 @@ app.post('/submit', async (request, reply) => {
 
 ```ts
 import http from 'http';
-import { nodeIdempotencyMiddleware } from 'idempotency-middleware';
+import { IdempotencyNode } from 'idempotency';
 
 const server = http.createServer((req, res) => {
-  nodeIdempotencyMiddleware(req, res, async () => {
+  IdempotencyNode(req, res, async () => {
     const session = (req as any).idempotencySession;
     const result = { success: true };
-    session.setResponseData(result);
-    await session.saveResponse();
+    await session.SaveResponse(result);
     res.writeHead(200, { 'Content-Type': 'application/json' });
     res.end(JSON.stringify(result));
   });
 });
 
 server.listen(3000);
+```
+
+### 4. Nest Js
+
+```ts
+// AppModule setup
+import { MiddlewareConsumer, Module, NestModule } from '@nestjs/common';
+import { IdempotencyNest } from 'idempotency';
+@Module
+({}) export class AppModule implements NestModule { configure(consumer: MiddlewareConsumer) { consumer.apply(IdempotencyNest).forRoutes('*'); } }
+
+
+// Controller usage
+@Get
+() async getData(@Req() req: Request,
+
+@Res
+() res: Response) { const session = (req as any).idempotencySession; const result = {ok: true, anotherData : false }; await session.SaveResponse(result); res.json(result); 
+}
+
 ```
 
 ---
@@ -105,7 +135,7 @@ expect(res.body.cached).toBe(true);
 
 ## 📁 Advanced Configuration
 
-You can extend or replace `JsonIdempotencySession` to implement database or Redis-based persistence.
+You can extend or replace `IdempotencySession` to implement database or Redis-based persistence.
 
 ---
 
