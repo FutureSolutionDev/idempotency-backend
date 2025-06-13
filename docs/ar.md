@@ -46,7 +46,9 @@ npm install express // fastify او Nest Js
 
 ```ts
 import express from 'express';
-import IdempotencyExpress from 'idempotency';
+import IdempotencyExpress from 'idempotency-backend/express';
+// Or 
+const IdempotencyExpress = require("idempotency-backend/express");
 
 const app = express();
 app.use(IdempotencyExpress);
@@ -64,7 +66,9 @@ app.post('/submit', async (req, res) => {
 
 ```ts
 import Fastify from 'fastify';
-import { IdempotencyFastify } from 'idempotency';
+import IdempotencyFastify from 'idempotency-backend/fastify';
+// Or
+const IdempotencyFastify = require("idempotency-backend/fastify");
 
 const app = Fastify();
 app.addHook('onRequest', IdempotencyFastify);
@@ -81,7 +85,9 @@ app.post('/submit', async (request, reply) => {
 
 ```ts
 import http from 'http';
-import { IdempotencyNode } from 'idempotency';
+import IdempotencyNode from 'idempotency-backend/node';
+// Or
+const IdempotencyNode = require("idempotency-backend/node");
 
 const server = http.createServer((req, res) => {
   IdempotencyNode(req, res, async () => {
@@ -101,7 +107,9 @@ server.listen(3000);
 ```ts
 // AppModule setup
 import { MiddlewareConsumer, Module, NestModule } from '@nestjs/common';
-import { IdempotencyNest } from 'idempotency';
+import IdempotencyNest  from 'idempotency-backend/nestjs';
+// Or 
+const IdempotencyNest = require("idempotency-backend/nestjs");
 @Module
 ({}) export class AppModule implements NestModule { configure(consumer: MiddlewareConsumer) { consumer.apply(IdempotencyNest).forRoutes('*'); } }
 

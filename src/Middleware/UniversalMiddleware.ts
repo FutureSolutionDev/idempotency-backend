@@ -1,4 +1,4 @@
-import IdempotencySession from "@Idempotency/Session";
+import IdempotencySession from "../Idempotency/Session";
 import { Response } from "express";
 import { FastifyReply } from "fastify";
 type Adapters = "express" | "fastify" | "node" | "nest";

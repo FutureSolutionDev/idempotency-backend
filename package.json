@@ -1,21 +1,37 @@
 {
-  "name": "idempotency",
-  "version": "1.0.0",
+  "name": "idempotency-backend",
+  "version": "1.0.2",
   "description": "Backend idempotency middleware using key+id to support frontend multi-request IDs",
   "type": "module",
-  "main": "dist/index.js",
-  "types": "dist/index.d.ts",
+  "main": "./dist/cjs/index.js",
+  "module": "./dist/esm/index.js",
+  "types": "./dist/types/index.d.ts",
   "exports": {
     ".": {
-      "import": "./dist/index.js",
-      "require": "./dist/index.js",
-      "types": "./dist/index.d.ts"
+      "require": "./dist/cjs/index.js",
+      "import": "./dist/esm/index.js"
+    },
+    "./fastify": {
+      "import": "./dist/esm/Middleware/Fastify.js",
+      "require": "./dist/cjs/Middleware/Fastify.js"
+    },
+    "./express": {
+      "import": "./dist/esm/Middleware/Express.js",
+      "require": "./dist/cjs/Middleware/Express.js"
+    },
+    "./node": {
+      "import": "./dist/esm/Middleware/Nodejs.js",
+      "require": "./dist/cjs/Middleware/Nodejs.js"
+    },
+    "./nestjs": {
+      "import": "./dist/esm/Middleware/Nest.js",
+      "require": "./dist/cjs/Middleware/Nest.js"
     }
   },
   "files": [
-    "dist/src",
-    "dist/index.js",
-    "dist/index.d.ts",
+    "dist/cjs",
+    "dist/esm",
+    "dist/types",
     "README.md",
     "LICENSE"
   ],
@@ -28,10 +44,13 @@
   ],
   "license": "MIT",
   "scripts": {
-    "test": "jest --config jest.config.ts",
-    "build": "tsc",
-    "start": "node dist/index.js",
-    "dev": "ts-node src/index.ts"
+    "clean": "powershell -Command \"if (Test-Path dist) { Remove-Item -Recurse -Force dist }\"",
+    "build:cjs": "tsc -p tsconfig.cjs.json",
+    "build:esm": "tsc -p tsconfig.esm.json && node scripts/fix-esm-extensions.js",
+    "build": "npm run clean && npm run build:cjs && npm run build:esm",
+    "start": "node dist/cjs/index.js",
+    "dev": "ts-node src/index.ts",
+    "postbuild": "node scripts/add-dist-package-type.js"
   },
   "devDependencies": {
     "@nestjs/common": "^11.1.3",
