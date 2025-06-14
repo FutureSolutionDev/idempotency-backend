@@ -21,7 +21,7 @@ This library is compatible with the frontend Idempotency Store
 ## 📦 Installation
 
 ```bash
-npm install idempotency
+npm install idempotency-backend
 
 ```
 

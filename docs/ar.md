@@ -21,7 +21,7 @@
 ## التثبيت
 
 ```bash
-npm install idempotency-middleware
+npm install idempotency-backend
 ```
 
 يجب أيضًا تثبيت الحزم المخصصة للنظام:
