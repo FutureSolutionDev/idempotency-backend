@@ -1,6 +1,6 @@
 {
   "name": "idempotency-backend",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "description": "Backend idempotency middleware using key+id to support frontend multi-request IDs",
   "type": "module",
   "main": "./dist/cjs/index.js",
