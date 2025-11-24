@@ -165,3 +165,6 @@ This library allows you to:
 Use it in APIs where retrying requests is common and safety is essential (e.g., payment endpoints).
 
 ---
+
+
+<!-- Security scan triggered at 2025-11-24 23:38:22 -->
